@@ -1,29 +1,23 @@
-// routes/userRoutes.js
-const mongoose = require("mongoose");
-
 const express = require('express');
 const router = express.Router();
+const Card = require('../models/Card');
 
-const Task = new mongoose.Schema({
-    title: String
+// Add a new card
+router.post('/add', async (req, res) => {
+  const { cardText, cardId, listId } = req.body;
+
+  const newCard = new Card({
+    cardText,
+    cardId,
+    listId,
   });
-// GET route for the home page
-router.get('/', (req, res) => {
-    res.render('index', { message: null, error: null });
-});
 
-// POST route for adding a user
-router.post('/user', async (req, res) => {
-    try {
-        const newUser = new Task({
-            title: req.body.name,
-        });
-        await newUser.save();
-        res.render('index', { message: 'User data saved successfully!' });
-    } catch (err) {
-        console.error('Error saving user data:', err);
-        res.status(500).render('index', { error: 'Error saving user data' });
-    }
+  try {
+    const savedCard = await newCard.save();
+    res.status(201).json(savedCard);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 module.exports = router;

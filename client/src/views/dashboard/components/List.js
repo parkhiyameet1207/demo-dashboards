@@ -1,3 +1,4 @@
+import axios from 'axios';
 import "../styles/List.css";
 
 import React, { Component } from "react";
@@ -21,19 +22,36 @@ class List extends Component {
   toggleAddingCard = () =>
     this.setState({ addingCard: !this.state.addingCard });
 
+
+  // ...
+  
   addCard = async (cardText) => {
     const { listId, dispatch } = this.props;
     console.log("cardText :::::::: >", cardText);
     this.toggleAddingCard();
-
+  
     const cardId = shortid.generate();
-    dispatch({
-      type: "ADD_CARD",
-      payload: { cardText, cardId, listId }
-    });
-    
-
+  
+    try {
+      const response = await axios.post('http://localhost:5000/api/cards/add', {
+        cardText,
+        cardId,
+        listId
+      });
+  
+      if (response.status === 201) {
+        dispatch({
+          type: "ADD_CARD",
+          payload: { cardText, cardId, listId }
+        });
+      }
+    } catch (error) {
+      console.error('Error adding card:', error);
+    }
   };
+  
+  // ...
+  
 
   toggleEditingTitle = () =>
     this.setState({ editingTitle: !this.state.editingTitle });

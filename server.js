@@ -1,44 +1,29 @@
-const express = require("express");
-const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost:27017/TasksList");
-
-const userRoutes = require('./routers');
+const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const cors = require('cors');
+
 const app = express();
-// app.use(express.json());
+const port = 5000;
+
 app.use(bodyParser.json());
-app.get('/', (req, res) => {
-  res.send("Runn Server")
-})
-const Task = new mongoose.Schema({
-  title: String
-});
-const users = mongoose.model('Task2', Task);
+app.use(cors());
 
-// const main = async () => {
-//   let data = new users({ title: 'Darpan' });
-//   await data.save();
-// }
-
-// main()
-app.get("/api/items", async (req, res) => {
-  const items = await users.find();
-  console.log("items",items);
-  // res.json(items);
-  // try {
-  //   console.log("items :::::::::: >",items);
-  // } catch (error) {
-  //   console.error(error);
-  //   res.status(500).send("Server Error");
-  // }
-});
-app.use('/', userRoutes);
-
-app.post('/api/items', async (req, res) => {
-  console.log("req",req);
- //   let data = new users({ title: 'Darpan' });
-  // let data = new users({ title: 'Darpan' });
-
+// Connect to MongoDB
+mongoose.connect('mongodb://localhost:27017/trello_clone', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
-app.listen(5000);
+// Check if connection was successful
+mongoose.connection.on('connected', () => {
+  console.log('Connected to MongoDB');
+});
+
+// Import routes
+const cardRoutes = require('./routes/cards');
+app.use('/api/cards', cardRoutes);
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
