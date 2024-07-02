@@ -10,7 +10,6 @@ import CardEditor from "./CardEditor";
 import ListEditor from "./ListEditor";
 
 import shortid from "shortid";
-import axios from "axios";
 
 class List extends Component {
   state = {
@@ -33,13 +32,13 @@ class List extends Component {
     const cardId = shortid.generate();
   
     try {
-      const response = await axios.post('http://localhost:5000/api/cards/add', {
+      const response = await axios.post('http://localhost:3000/api/cards/add', {
         cardText,
         cardId,
         listId
       });
-  
-      if (response.status === 201) {
+  console.log("response :::::::: >",response);
+      if (response.status === 200) {
         dispatch({
           type: "ADD_CARD",
           payload: { cardText, cardId, listId }

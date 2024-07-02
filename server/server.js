@@ -21,7 +21,7 @@ mongoose.connection.on('connected', () => {
 });
 
 // Import routes
-const cardRoutes = require('./routes/cards');
+const cardRoutes = require('../routers.js');
 app.use('/api/cards', cardRoutes);
 
 app.listen(port, () => {
